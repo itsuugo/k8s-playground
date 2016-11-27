@@ -6,7 +6,8 @@ Vagrant.configure(2) do |config|
   (1..3).each do |i|
     config.vm.define "k8s#{i}" do |s|
       s.ssh.forward_agent = true
-      s.vm.box = "ubuntu/xenial64"
+      #s.vm.box = "ubuntu/xenial64"
+      s.vm.box = "bento/ubuntu-16.04"
       s.vm.hostname = "k8s#{i}"
       s.vm.provision :shell, path: "scripts/bootstrap_ansible.sh"
       if i == 1
@@ -18,6 +19,7 @@ Vagrant.configure(2) do |config|
         auto_config: true,
         virtualbox__intnet: "k8s-net"
       s.vm.provider "virtualbox" do |v|
+        v.linked_clone = true
         v.name = "k8s#{i}"
         v.memory = 2048
         v.gui = false
