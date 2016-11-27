@@ -17,6 +17,8 @@
     - "start-weave"
     - "start-calico"
     - "start-canal"
+    - "start-dashboard"
+    - "start-midonet"
 
 - name: Ensure jq package is installed
   become: yes

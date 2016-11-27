@@ -1,9 +1,21 @@
 # -*- mode: ruby -*-
 # # vi: set ft=ruby :
 
+required_plugins = %w( vagrant-hostmanager vagrant-cachier )
+required_plugins.each do |plugin|
+  system "vagrant plugin install #{plugin}" unless Vagrant.has_plugin? plugin
+end
+
 Vagrant.configure(2) do |config|
 
-  (1..3).each do |i|
+  k8nodes=(ENV['K8_NODES'] || 3)
+  config.hostmanager.enabled = true
+  config.hostmanager.manage_host = false
+  config.hostmanager.manage_guest = true
+  config.hostmanager.ignore_private_ip = false
+  config.hostmanager.include_offline = true
+
+  (1..k8nodes).each do |i|
     config.vm.define "k8s#{i}" do |s|
       s.ssh.forward_agent = true
       #s.vm.box = "ubuntu/xenial64"
@@ -21,7 +33,7 @@ Vagrant.configure(2) do |config|
       s.vm.provider "virtualbox" do |v|
         v.linked_clone = true
         v.name = "k8s#{i}"
-        v.memory = 2048
+        v.memory = 8048
         v.gui = false
       end
     end
